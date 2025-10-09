@@ -39,9 +39,9 @@ The infrastructure provisioning script will automatically create an Azure Kubern
   * **Machine Type**: `Standard_D32s_v5`
   * **Quantity**: 2 nodes (default for control/management)
 * **GPU Worker Node Pool**:
-  * **Machine Type**: `Standard_NC96ads_A100_v4`
+  * **Machine Type**: `Standard_NC24ads_A100_v4`
   * **Quantity**: 1 nodes
-  * **GPUs per node**: 4 x **NVIDIA A100** (80GB)
+  * **GPUs per node**: 1 x **NVIDIA A100** (80GB)
 
 You may adjust node counts and machine types in the environment variables to fit your workload and quota limits.
 
@@ -90,8 +90,8 @@ export REGION=<PREFERRED_AZURE_REGION>
 export RESOURCE_GROUP=<RG-GROUP-NAME>
 export CLUSTER_NAME=rag-demo 
 export CLUSTER_MACHINE_TYPE=Standard_D32s_v5
-export NODE_POOL_MACHINE_TYPE=standard_nc96ads_a100_v4
-export NODE_COUNT=1
+export NODE_POOL_MACHINE_TYPE=standard_nc24ads_a100_v4
+export NODE_COUNT=3
 export CPU_COUNT=2
 export CHART_NAME=rag-chart
 export NAMESPACE=rag
@@ -175,7 +175,7 @@ helm install rag -n rag https://helm.ngc.nvidia.com/nvidia/blueprint/charts/nvid
   --password "${NGC_API_KEY}" \
   --set imagePullSecret.password=$NGC_API_KEY \
   --set ngcApiSecret.password=$NGC_API_KEY \
-  --set nim-llm.enabled=true \
+  --set nim-llm.enabled=false \
   --set nim-llm.image.repository="nvcr.io/nim/nvidia/llama-3.3-nemotron-super-49b-v1" \
   --set nim-llm.image.tag="latest" \
   --set nim-llm.resources.limits."nvidia\.com/gpu"=2 \
@@ -211,7 +211,8 @@ helm install rag -n rag https://helm.ngc.nvidia.com/nvidia/blueprint/charts/nvid
   --set ingestor-server.nv-ingest.nemoretriever-graphic-elements-v1.deployed=false \
   --set ingestor-server.nv-ingest.nemoretriever-table-structure-v1.deployed=false \
   --set ingestor-server.nv-ingest.paddleocr-nim.deployed=false \
-  --set envVars.ENABLE_RERANKER="False"
+  --set envVars.APP_LLM_SERVERURL="" \
+  --set envVars.ENABLE_RERANKER="True"
 ```
 
 ### 3. Verify that the PODs are running
